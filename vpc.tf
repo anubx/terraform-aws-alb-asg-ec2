@@ -2,10 +2,10 @@ module "vpc" {
   # source = "../../"
   source = "github.com/terraform-aws-modules/terraform-aws-vpc"
 
-  name = "ec-${var.name}-vpc"
+  name = "${local.name_prefix}-vpc"
   cidr = var.cidr
 
-  azs             = ["${local.azs}"]
+  azs             = local.azs
   private_subnets = var.private_subnets
   public_subnets  = var.public_subnets
 
@@ -13,24 +13,24 @@ module "vpc" {
 
   enable_ipv6 = false
 
-  enable_nat_gateway = true
-  single_nat_gateway = true
+  enable_nat_gateway     = true
+  single_nat_gateway     = true
   one_nat_gateway_per_az = false
 
   public_subnet_tags = {
-    Name = "demo-${var.name}-public"
+    Name = "${local.name_prefix}-public"
   }
 
   private_subnet_tags = {
-    Name = "demo-${var.name}-private"
+    Name = "${local.name_prefix}-private"
   }
 
   tags = {
     Owner       = "Terraform"
-    Environment = var.name
+    Environment = local.env
   }
 
   vpc_tags = {
-    Name = "demo-${var.name}-vpc"
+    Name = "${local.name_prefix}-vpc"
   }
 }

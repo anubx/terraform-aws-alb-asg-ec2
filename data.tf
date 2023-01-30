@@ -9,3 +9,15 @@ data "aws_availability_zones" "azs" {
     values = ["not-opted-in", "opted-in"]
   }
 }
+
+data "aws_ami" "amazon2" {
+  most_recent = true
+  owners      = ["amazon"]
+
+  filter {
+    name   = "name"
+    values = ["amzn2-ami-hvm*"]
+  }
+}
+
+
