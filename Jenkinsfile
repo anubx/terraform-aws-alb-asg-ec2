@@ -49,7 +49,7 @@ pipeline {
 
         stage('Create TFVARS File') {
             steps {
-                withAWSParameterStore(credentialsId: 'aws_keys', naming: 'basename', path: "${SSM}", recursive: true, regionName: "us-east-1") {
+                withAWSParameterStore(credentialsId: '', naming: 'basename', path: "${SSM}", recursive: true, regionName: "us-east-1") {
                     sh '''
                         rm -rf terraform_${AWS_ENV}.tfvars .terraform
 cat << TFVARS > ./terraform_${AWS_ENV}.tfvars
