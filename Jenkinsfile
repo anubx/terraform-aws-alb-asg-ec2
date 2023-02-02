@@ -4,8 +4,8 @@ pipeline {
         SSM = "/demo/terraform/${AWS_ENV}"
     }
     parameters {
+        string(name: 'APP_NAME', defaultValue: '', description: 'Enter name for application')
         choice choices: ['dev', 'uat', 'prd'], description: 'Select an AWS account', name: 'AWS_ENV'
-        string(name: 'VPC_NAME', defaultValue: '', description: 'Enter name for VPC')
         choice choices: ['us-east-1', 'us-east-2', 'us-west-1'], description: 'Select an AWS region', name: 'AWS_REGION'
         choice choices: ['apply', 'destroy'], description: 'Deploy or destroy', name: 'TERRAFORM'
     }
@@ -18,19 +18,16 @@ pipeline {
                         env.TF_STATE_BUCKET="demo-tf-907207106954-us-east-1"
                         env.TF_STATE_OBJECT_KEY="terraform.tfstate"
                         env.TF_LOCK_DB="demo-tf-lock-table"
-                        env.AWS_REGION="us-east-1"
                         break
                     case 'uat':
                         env.TF_STATE_BUCKET="demo-tf-907207106954-us-east-1"
                         env.TF_STATE_OBJECT_KEY="terraform.tfstate"
                         env.TF_LOCK_DB="demo-tf-lock-table"
-                        env.AWS_REGION="us-east-1"
                         break
                     case 'prd':
                         env.TF_STATE_BUCKET="demo-tf-907207106954-us-east-1"
                         env.TF_STATE_OBJECT_KEY="terraform.tfstate"
                         env.TF_LOCK_DB="demo-tf-lock-table"
-                        env.AWS_REGION="us-east-1"
                         break     
                     }
                 }
@@ -55,10 +52,11 @@ pipeline {
 
         stage('Create TFVARS File') {
             steps {
-                withAWSParameterStore(credentialsId: 'aws_keys', naming: 'basename', path: "${SSM}", recursive: true, regionName: "${AWS_REGION}") {
+                withAWSParameterStore(credentialsId: 'aws_keys', naming: 'basename', path: "${SSM}", recursive: true, regionName: "us-east-1") {
                     sh '''
                         rm -rf terraform_${AWS_ENV}.tfvars .terraform
 cat << TFVARS > ./terraform_${AWS_ENV}.tfvars
+app_name = "${APP_NAME}"
 cidr = "${CIDR}"
 private_subnets = ${PRIVATE_SUBNETS}
 public_subnets = ${PUBLIC_SUBNETS}
