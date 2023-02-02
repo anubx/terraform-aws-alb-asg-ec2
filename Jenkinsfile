@@ -70,6 +70,7 @@ cat terraform_${AWS_ENV}.tfvars
                     success {
                         stash name: "tfvars", includes: "terraform_${AWS_ENV}.tfvars"
                     }
+                }
             }
         }
 
