@@ -38,7 +38,7 @@ pipeline {
                 sh '''
 
                     echo "test 123"
-                    less ~/.bash_profile
+                    cat ~/.bash_profile
                 '''
             }
         }
