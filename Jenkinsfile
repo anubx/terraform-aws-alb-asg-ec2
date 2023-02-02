@@ -61,27 +61,20 @@ pipeline {
                     sh '''
                         . ~/.bash_profile
                         rm -rf terraform_${AWS_ENV}.tfvars .terraform
-
 cat << TFVARS > ./terraform_${AWS_ENV}.tfvars
-name = "${VPC_NAME}"
 cidr = "${CIDR}"
 private_subnets = ${PRIVATE_SUBNETS}
 public_subnets = ${PUBLIC_SUBNETS}
-database_subnets = ${DATABASE_SUBNETS}
-elasticache_subnets = ${ELASTICACHE_SUBNETS}
-intra_subnets = ${INTRANET_SUBNETS}
-TFVARS
-                       
+TFVARS         
                     '''
                 }
-                withAWS(roleAccount: "${AWS_ACCT}", role: "${AWS_ROLE}", region: "${AWS_REGION}") {
+                withAWS(credentials:'aws_keys', region: "${AWS_REGION}") {
                     sh '''
-                        cd aws-resources/create-vpc
                         . ~/.bash_profile
-                        terraform init -backend-config=backend-${AWS_ENV}.tfvars -force-copy
+                        terraform init -force-copy
                         terraform workspace select ${AWS_ENV} || terraform workspace new ${AWS_ENV}
                         terraform plan -var-file=terraform_${AWS_ENV}.tfvars -out=tfplan -input=false
-                        terraform apply --auto-approve tfplan
+                        
                     '''
                 }
             }
