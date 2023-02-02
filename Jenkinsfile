@@ -52,14 +52,11 @@ pipeline {
                 '''
             }
         }
-        stage('Deploy Demo App') {
-             when {
-                environment name: 'TERRAFORM', value: 'apply'
-            }
+
+        stage('Create TFVARS File') {
             steps {
                 withAWSParameterStore(credentialsId: 'aws_keys', naming: 'basename', path: "${SSM}", recursive: true, regionName: "${AWS_REGION}") {
                     sh '''
-                        . ~/.bash_profile
                         rm -rf terraform_${AWS_ENV}.tfvars .terraform
 cat << TFVARS > ./terraform_${AWS_ENV}.tfvars
 cidr = "${CIDR}"
@@ -69,8 +66,34 @@ TFVARS
 cat terraform_${AWS_ENV}.tfvars
                     '''
                 }
+                post {
+                    success {
+                        stash name: "tfvars", includes: "terraform_${AWS_ENV}.tfvars"
+                    }
+            }
+        }
+
+        stage('Deploy Demo App') {
+             when {
+                environment name: 'TERRAFORM', value: 'apply'
+            }
+            steps {
+                unstash "tfvars"
+//                 withAWSParameterStore(credentialsId: 'aws_keys', naming: 'basename', path: "${SSM}", recursive: true, regionName: "${AWS_REGION}") {
+//                     sh '''
+//                         . ~/.bash_profile
+//                         rm -rf terraform_${AWS_ENV}.tfvars .terraform
+// cat << TFVARS > ./terraform_${AWS_ENV}.tfvars
+// cidr = "${CIDR}"
+// private_subnets = ${PRIVATE_SUBNETS}
+// public_subnets = ${PUBLIC_SUBNETS}
+// TFVARS
+// cat terraform_${AWS_ENV}.tfvars
+//                     '''
+//                 }
                 withAWS(credentials:'aws_keys', region: "${AWS_REGION}") {
                     sh """
+                        cat terraform_${AWS_ENV}.tfvars
                         export TF_STATE_BUCKET="${TF_STATE_BUCKET}"
                         export TF_STATE_OBJECT_KEY="${TF_STATE_OBJECT_KEY}"
                         export TF_LOCK_DB="${TF_LOCK_DB}"
@@ -90,12 +113,13 @@ cat terraform_${AWS_ENV}.tfvars
             }
         }
 
-//         stage('Destroy VPC') {
-//              when {
-//                 environment name: 'TERRAFORM', value: 'destroy'
-//             }
-//             steps {
-//                 withAWSParameterStore(credentialsId: 'aws_keys', naming: 'basename', path: "${SSM}", recursive: true, regionName: 'us-west-2') {
+        stage('Destroy Demo App') {
+             when {
+                environment name: 'TERRAFORM', value: 'destroy'
+            }
+            steps {
+                unstash "tfvars"
+//                 withAWSParameterStore(credentialsId: 'aws_keys', naming: 'basename', path: "${SSM}", recursive: true, regionName: "${AWS_REGION}") {
 //                     sh '''
 //                         cd aws-resources/create-vpc
 //                         . ~/.bash_profile
@@ -113,16 +137,15 @@ cat terraform_${AWS_ENV}.tfvars
                        
 //                     '''
 //                 }
-//                 withAWS(roleAccount: "${AWS_ACCT}", role: "${AWS_ROLE}", region: "${AWS_REGION}") {
-//                     sh '''
-//                         cd aws-resources/create-vpc
-//                         . ~/.bash_profile
-//                         terraform init -backend-config=backend-${AWS_ENV}.tfvars -force-copy
-//                         terraform workspace select ${AWS_ENV} || terraform workspace new ${AWS_ENV}
-//                         terraform destroy -var-file=terraform_${AWS_ENV}.tfvars --auto-approve
-//                     '''
-//                 }
-//             }
-        // }
+                withAWS(roleAccount: "${AWS_ACCT}", role: "${AWS_ROLE}", region: "${AWS_REGION}") {
+                    sh '''
+                        . ~/.bash_profile
+                        terraform init -backend-config=backend-${AWS_ENV}.tfvars -force-copy
+                        terraform workspace select ${AWS_ENV} || terraform workspace new ${AWS_ENV}
+                        terraform destroy -var-file=terraform_${AWS_ENV}.tfvars --auto-approve
+                    '''
+                }
+            }
+        }
     }
 }
