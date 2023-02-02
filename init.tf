@@ -5,7 +5,11 @@ terraform {
       version = "~> 4.0"
     }
   }
-  backend "s3" {}
+  backend "s3" {
+    bucket = "willbeoverwritten"
+    key    = "willbeoverwritten"
+    encrypt = true
+  }
 }
 
 # Configure the AWS Provider
