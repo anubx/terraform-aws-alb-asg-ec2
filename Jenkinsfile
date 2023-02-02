@@ -75,7 +75,7 @@ TFVARS
                         export TF_LOCK_DB="${TF_LOCK_DB}"
                         echo "${TF_STATE_BUCKET}"
                         . ~/.bash_profile
-                        terraform init 
+                        terraform init \
                         -backend=true \
                         -backend-config key="${TF_STATE_OBJECT_KEY}" \
                         -backend-config bucket="${TF_STATE_BUCKET}" \
