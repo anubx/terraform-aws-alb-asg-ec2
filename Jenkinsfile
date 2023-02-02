@@ -15,14 +15,17 @@ pipeline {
                 script {
                     switch(env.AWS_ENV) {
                     case 'dev':
+                        env.TF_STATE_BUCKET="${TF_STATE_BUCKET_US_EAST_1}"
                         env.TF_STATE_OBJECT_KEY="terraform.tfstate"
                         env.TF_LOCK_DB="demo-tf-lock-table"
                         break
                     case 'uat':
+                        env.TF_STATE_BUCKET="${TF_STATE_BUCKET_US_EAST_1}"
                         env.TF_STATE_OBJECT_KEY="terraform.tfstate"
                         env.TF_LOCK_DB="demo-tf-lock-table"
                         break
                     case 'prd':
+                        env.TF_STATE_BUCKET="${TF_STATE_BUCKET_US_WEST_1}"
                         env.TF_STATE_OBJECT_KEY="terraform.tfstate"
                         env.TF_LOCK_DB="demo-tf-lock-table"
                         break     
