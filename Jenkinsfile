@@ -32,9 +32,9 @@ pipeline {
         // }
         stage('Install Terraform') {
             steps {
-                dir('.tfenv') {
-                    checkout([$class: 'GitSCM', branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[credentialsId: '', url: 'https://github.com/tfutils/tfenv.git']]])
-                }
+                // dir('.tfenv') {
+                //     checkout([$class: 'GitSCM', branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[credentialsId: '', url: 'https://github.com/tfutils/tfenv.git']]])
+                // }
                 sh '''
 
                     echo "test 123"
