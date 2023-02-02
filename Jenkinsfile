@@ -70,6 +70,9 @@ TFVARS
                 }
                 withAWS(credentials:'aws_keys', region: "${AWS_REGION}") {
                     sh """
+                        export TF_STATE_BUCKET="${TF_STATE_BUCKET}"
+                        export TF_STATE_OBJECT_KEY="${TF_STATE_OBJECT_KEY}"
+                        export TF_LOCK_DB="${TF_LOCK_DB}"
                         echo "${TF_STATE_BUCKET}"
                         . ~/.bash_profile
                         terraform init 
