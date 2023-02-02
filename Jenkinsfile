@@ -36,7 +36,7 @@ pipeline {
                 //     checkout([$class: 'GitSCM', branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[credentialsId: '', url: 'https://github.com/tfutils/tfenv.git']]])
                 // }
                 sh '''
-                    rm -rf ./tfenv
+                    rm -rf .tfenv
                     git clone --depth=1 https://github.com/tfutils/tfenv.git .tfenv
                     echo 'export PATH="$WORKSPACE/.tfenv/bin:$PATH"' >> ~/.bash_profile
                     . ~/.bash_profile
