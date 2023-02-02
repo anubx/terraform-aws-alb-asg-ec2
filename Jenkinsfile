@@ -84,7 +84,7 @@ cat terraform_${AWS_ENV}.tfvars
                         -force-copy
                         terraform workspace select ${AWS_ENV} || terraform workspace new ${AWS_ENV}
                         terraform plan -var-file=terraform_${AWS_ENV}.tfvars -out=tfplan -input=false
-                        
+                        terraform apply --auto-approve tfplan
                     """
                 }
             }
