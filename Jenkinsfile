@@ -65,7 +65,8 @@ cat << TFVARS > ./terraform_${AWS_ENV}.tfvars
 cidr = "${CIDR}"
 private_subnets = ${PRIVATE_SUBNETS}
 public_subnets = ${PUBLIC_SUBNETS}
-TFVARS         
+TFVARS
+cat terraform_${AWS_ENV}.tfvars
                     '''
                 }
                 withAWS(credentials:'aws_keys', region: "${AWS_REGION}") {
