@@ -10,26 +10,26 @@ pipeline {
         choice choices: ['apply', 'destroy'], description: 'Deploy or destroy', name: 'TERRAFORM'
     }
     stages {
-        stage("Set Environment") {
-        steps {
-            script{
-                switch(env.AWS_ENV) {
-                case 'dev':
-                    env.AWS_ROLE = "${DEV_ROLE_ARN}"
-                    env.AWS_ACCT = "${DEV_AWS_ACCT}"
-                    break
-                case 'uat':
-                    env.AWS_ROLE = "${DEV_ROLE_ARN}"
-                    env.AWS_ACCT = "${DEV_AWS_ACCT}"
-                    break
-                case 'prd':
-                    env.AWS_ROLE = "${STAGING_ROLE_ARN}"
-                    env.AWS_ACCT = "${STAGING_AWS_ACCT}"
-                    break     
-                }
-            }
-        }
-    }
+        // stage("Set Environment") {
+        //     steps {
+        //         script {
+        //             switch(env.AWS_ENV) {
+        //             case 'dev':
+        //                 env.AWS_ROLE = "${DEV_ROLE_ARN}"
+        //                 env.AWS_ACCT = "${DEV_AWS_ACCT}"
+        //                 break
+        //             case 'uat':
+        //                 env.AWS_ROLE = "${DEV_ROLE_ARN}"
+        //                 env.AWS_ACCT = "${DEV_AWS_ACCT}"
+        //                 break
+        //             case 'prd':
+        //                 env.AWS_ROLE = "${STAGING_ROLE_ARN}"
+        //                 env.AWS_ACCT = "${STAGING_AWS_ACCT}"
+        //                 break     
+        //             }
+        //         }
+        //     }
+        // }
         stage('Install Terraform') {
             steps {
                 dir('~/.tfenv') {
