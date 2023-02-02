@@ -9,8 +9,7 @@ locals {
 
   counts = {
     "dev" = "1"
-    "int" = "1"
-    "stg" = "1"
+    "uat" = "1"
     "prd" = "2"
   }
 
