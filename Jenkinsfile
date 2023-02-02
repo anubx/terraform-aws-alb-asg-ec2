@@ -6,7 +6,7 @@ pipeline {
     parameters {
         string(name: 'APP_NAME', defaultValue: '', description: 'Enter name for application')
         choice choices: ['dev', 'uat', 'prd'], description: 'Select an AWS account', name: 'AWS_ENV'
-        choice choices: ['us-east-1', 'us-east-2', 'us-west-1'], description: 'Select an AWS region', name: 'AWS_REGION'
+        choice choices: ['us-east-1', 'us-west-2'], description: 'Select an AWS region', name: 'AWS_REGION'
         choice choices: ['apply', 'destroy'], description: 'Deploy or destroy', name: 'TERRAFORM'
     }
     stages {
@@ -25,7 +25,7 @@ pipeline {
                         env.TF_LOCK_DB="demo-tf-lock-table"
                         break
                     case 'prd':
-                        env.TF_STATE_BUCKET="${TF_STATE_BUCKET_US_WEST_1}"
+                        env.TF_STATE_BUCKET="${TF_STATE_BUCKET_US_WEST_2}"
                         env.TF_STATE_OBJECT_KEY="terraform.tfstate"
                         env.TF_LOCK_DB="demo-tf-lock-table"
                         break     
