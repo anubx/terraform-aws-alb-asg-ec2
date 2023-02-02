@@ -75,7 +75,7 @@ cat terraform_${AWS_ENV}.tfvars
             }
             steps {
                 unstash "tfvars"
-                withAWS(roleAccount:"${AWS_ACCT}", role: "${AWS_ROLE}", region: "${AWS_REGION}") {
+                withAWS(profile: 'default', region: "${AWS_REGION}") {
                     sh """
                         . ~/.bash_profile
                         terraform init \
@@ -98,7 +98,7 @@ cat terraform_${AWS_ENV}.tfvars
             }
             steps {
                 unstash "tfvars"
-                withAWS(roleAccount:"${AWS_ACCT}", role: "${AWS_ROLE}", region: "${AWS_REGION}") {
+                withAWS(profile: 'default', region: "${AWS_REGION}") {
                     sh """
                         . ~/.bash_profile
                         terraform init \
