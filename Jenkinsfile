@@ -32,16 +32,11 @@ pipeline {
         // }
         stage('Install Terraform') {
             steps {
-                dir('~/.tfenv') {
+                dir('.tfenv') {
                     checkout([$class: 'GitSCM', branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[credentialsId: '', url: 'https://github.com/tfutils/tfenv.git']]])
                 }
                 sh '''
-                    echo 'export PATH="$HOME/.tfenv/bin:$PATH"' >> ~/.bashrc
-                    export PATH="$HOME/.tfenv/bin:$PATH"
-                    . ~/.bashrc
-                    tfenv install 0.15.4
-                    tfenv use 0.15.4
-                    terraform --version
+                    less ~/.bash_profile
                 '''
             }
         }
