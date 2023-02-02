@@ -44,7 +44,7 @@ pipeline {
                 sh '''
                     rm -rf .tfenv
                     git clone --depth=1 https://github.com/tfutils/tfenv.git .tfenv
-                    echo 'export PATH="$WORKSPACE/.tfenv/bin:$PATH"' >> ~/.bash_profile
+                    echo 'export PATH="$WORKSPACE/.tfenv/bin:$PATH"' > ~/.bash_profile
                     . ~/.bash_profile
                     tfenv install latest
                     tfenv use latest
@@ -70,12 +70,14 @@ TFVARS
                 }
                 withAWS(credentials:'aws_keys', region: "${AWS_REGION}") {
                     sh """
-                        export TF_STATE_BUCKET="${TF_STATE_BUCKET}"
-                        export TF_STATE_OBJECT_KEY="${TF_STATE_OBJECT_KEY}"
-                        export TF_LOCK_DB="${TF_LOCK_DB}"
                         echo "${TF_STATE_BUCKET}"
                         . ~/.bash_profile
-                        terraform init -force-copy
+                        terraform init 
+                        -backend=true \
+                        -backend-config key="${TF_STATE_OBJECT_KEY}" \
+                        -backend-config bucket="${TF_STATE_BUCKET}" \
+                        -backend-config dynamodb_table="${TF_LOCK_DB}" \
+                        -force-copy
                         terraform workspace select ${AWS_ENV} || terraform workspace new ${AWS_ENV}
                         terraform plan -var-file=terraform_${AWS_ENV}.tfvars -out=tfplan -input=false
                         
