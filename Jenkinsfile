@@ -80,25 +80,8 @@ cat terraform_${AWS_ENV}.tfvars
             }
             steps {
                 unstash "tfvars"
-//                 withAWSParameterStore(credentialsId: 'aws_keys', naming: 'basename', path: "${SSM}", recursive: true, regionName: "${AWS_REGION}") {
-//                     sh '''
-//                         . ~/.bash_profile
-//                         rm -rf terraform_${AWS_ENV}.tfvars .terraform
-// cat << TFVARS > ./terraform_${AWS_ENV}.tfvars
-// cidr = "${CIDR}"
-// private_subnets = ${PRIVATE_SUBNETS}
-// public_subnets = ${PUBLIC_SUBNETS}
-// TFVARS
-// cat terraform_${AWS_ENV}.tfvars
-//                     '''
-//                 }
                 withAWS(credentials:'aws_keys', region: "${AWS_REGION}") {
                     sh """
-                        cat terraform_${AWS_ENV}.tfvars
-                        export TF_STATE_BUCKET="${TF_STATE_BUCKET}"
-                        export TF_STATE_OBJECT_KEY="${TF_STATE_OBJECT_KEY}"
-                        export TF_LOCK_DB="${TF_LOCK_DB}"
-                        echo "${TF_STATE_BUCKET}"
                         . ~/.bash_profile
                         terraform init \
                         -backend=true \
@@ -120,24 +103,6 @@ cat terraform_${AWS_ENV}.tfvars
             }
             steps {
                 unstash "tfvars"
-//                 withAWSParameterStore(credentialsId: 'aws_keys', naming: 'basename', path: "${SSM}", recursive: true, regionName: "${AWS_REGION}") {
-//                     sh '''
-//                         cd aws-resources/create-vpc
-//                         . ~/.bash_profile
-//                         rm -rf terraform_${AWS_ENV}.tfvars .terraform
-
-// cat << TFVARS > ./terraform_${AWS_ENV}.tfvars
-// name = "${VPC_NAME}"
-// cidr = "${CIDR}"
-// private_subnets = ${PRIVATE_SUBNETS}
-// public_subnets = ${PUBLIC_SUBNETS}
-// database_subnets = ${DATABASE_SUBNETS}
-// elasticache_subnets = ${ELASTICACHE_SUBNETS}
-// intra_subnets = ${INTRANET_SUBNETS}
-// TFVARS
-                       
-//                     '''
-//                 }
                 withAWS(roleAccount: "${AWS_ACCT}", role: "${AWS_ROLE}", region: "${AWS_REGION}") {
                     sh '''
                         . ~/.bash_profile
