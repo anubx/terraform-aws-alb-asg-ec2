@@ -36,9 +36,12 @@ pipeline {
                 //     checkout([$class: 'GitSCM', branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[credentialsId: '', url: 'https://github.com/tfutils/tfenv.git']]])
                 // }
                 sh '''
-
-                    echo "test 123"
-                    cat ~/.bash_profile
+                    git clone --depth=1 https://github.com/tfutils/tfenv.git .tfenv
+                    echo 'export PATH="$WORKSPACE/.tfenv/bin:$PATH"' >> ~/.bash_profile
+                    . ~/.bash_profile
+                    tfenv install 0.15.3 && \
+                    tfenv use 0.15.3
+                    terraform --version
                 '''
             }
         }
