@@ -40,8 +40,8 @@ pipeline {
                     git clone --depth=1 https://github.com/tfutils/tfenv.git .tfenv
                     echo 'export PATH="$WORKSPACE/.tfenv/bin:$PATH"' >> ~/.bash_profile
                     . ~/.bash_profile
-                    tfenv install 0.15.3 && \
-                    tfenv use 0.15.3
+                    tfenv install latest
+                    tfenv use latest
                     terraform --version
                 '''
             }
