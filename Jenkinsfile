@@ -35,9 +35,11 @@ pipeline {
                 dir('.tfenv') {
                     checkout([$class: 'GitSCM', branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[credentialsId: '', url: 'https://github.com/tfutils/tfenv.git']]])
                 }
-                sh """
+                sh '''
+
+                    echo "test 123"
                     less ~/.bash_profile
-                """
+                '''
             }
         }
 //         stage('Deploy VPC') {
