@@ -4,7 +4,7 @@ pipeline {
         SSM = "/demo/terraform/${AWS_ENV}"
     }
     parameters {
-        string(name: 'APP_NAME', defaultValue: '', description: 'Enter name for application')
+        choice choices: ['tf-demo-1', 'tf-demo-2'], description: 'Select app name', name: 'APP_NAME'
         choice choices: ['dev', 'uat', 'prd'], description: 'Select an AWS account', name: 'AWS_ENV'
         choice choices: ['us-east-1', 'us-west-2'], description: 'Select an AWS region', name: 'AWS_REGION'
         choice choices: ['apply', 'destroy'], description: 'Deploy or destroy', name: 'TERRAFORM'
