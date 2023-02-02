@@ -104,12 +104,17 @@ cat terraform_${AWS_ENV}.tfvars
             steps {
                 unstash "tfvars"
                 withAWS(roleAccount: "${AWS_ACCT}", role: "${AWS_ROLE}", region: "${AWS_REGION}") {
-                    sh '''
+                    sh """
                         . ~/.bash_profile
-                        terraform init -backend-config=backend-${AWS_ENV}.tfvars -force-copy
+                        terraform init \
+                        -backend=true \
+                        -backend-config key="${TF_STATE_OBJECT_KEY}" \
+                        -backend-config bucket="${TF_STATE_BUCKET}" \
+                        -backend-config dynamodb_table="${TF_LOCK_DB}" \
+                        -force-copy
                         terraform workspace select ${AWS_ENV} || terraform workspace new ${AWS_ENV}
                         terraform destroy -var-file=terraform_${AWS_ENV}.tfvars --auto-approve
-                    '''
+                    """
                 }
             }
         }
