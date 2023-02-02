@@ -66,10 +66,10 @@ TFVARS
 cat terraform_${AWS_ENV}.tfvars
                     '''
                 }
-                post {
-                    success {
-                        stash name: "tfvars", includes: "terraform_${AWS_ENV}.tfvars"
-                    }
+            }
+            post {
+                success {
+                    stash name: "tfvars", includes: "terraform_${AWS_ENV}.tfvars"
                 }
             }
         }
