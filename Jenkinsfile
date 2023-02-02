@@ -1,5 +1,5 @@
 pipeline {
-    agent {  label 'master' }
+    // agent {  label 'master' }
     environment {
         SSM = "/demo/terraform/${AWS_ENV}"
     }
